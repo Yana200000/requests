@@ -1,0 +1,22 @@
+import requests as rq
+import os
+
+class YaUploader:
+    def __init__(self, token: str):
+        self.token = token
+
+    def upload(self, file_path: str):
+        file_path = os.path.normpath(file_path)
+        HEADERS = {"Authorization" : f'OAuth {self.token}'}
+        FILES = {"file" : open(file_path, 'rb')}
+
+        response = rq.get("https://cloud-api.yandex.net/v1/disk/resources/upload", params = {"path": file_path}, headers = HEADERS)
+        url = response.json().get('href')
+        response_upload = rq.put(url, files = FILES, headers = {})
+
+
+if __name__ == '__main__':
+    path_to_file = r"C:\Users\User\Desktop\requests_hw\first"
+    token = ''
+    uploader = YaUploader(token)
+    result = uploader.upload(path_to_file)
